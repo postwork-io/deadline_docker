@@ -12,7 +12,7 @@ services:
         - SECRETS_USERNAME=$SECRETS_USERNAME
         - SECRETS_PASSWORD=$SECRETS_PASSWORD
         - DB_CERT_PASS=$DB_CERT_PASS
-        - DB_HOST=deadline-db.$ROOT_DOMAIN
+        - DB_HOST=$DB_HOST
         - CERT_ORG=$CERT_ORG
         - CERT_OU=$CERT_OU
     volumes:
