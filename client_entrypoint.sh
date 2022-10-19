@@ -20,29 +20,53 @@ if [ "$1" == "rcs" ]; then
 
         /bin/bash -c "$RCS_BIN"
     else
-
         echo "Initializing Remote Connection Server"
-        /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
-        --mode unattended \
-        --enable-components proxyconfig \
-        --repositorydir /repo \
-        --dbsslcertificate /client_certs/deadline-client.pfx \
-        --dbsslpassword $DB_CERT_PASS \
-        --noguimode true \
-        --slavestartup false \
-        --httpport $RCS_HTTP_PORT \
-        --tlsport $RCS_TLS_PORT \
-        --enabletls true \
-        --tlscertificates generate \
-        --generatedcertdir ~/certs \
-        --clientcert_pass $RCS_CERT_PASS \
-        --InitializeSecretsManagementServer true \
-        --secretsAdminName $SECRETS_USERNAME \
-        --secretsAdminPassword $SECRETS_PASSWORD \
-        --masterKeyName defaultKey \
-        --osUsername root
+        if [ -e "/client_certs/certs/Deadline10RemoteClient.pfx" ]; then
+        
+            /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
+            --mode unattended \
+            --enable-components proxyconfig \
+            --repositorydir /repo \
+            --dbsslcertificate /client_certs/deadline-client.pfx \
+            --dbsslpassword $DB_CERT_PASS \
+            --noguimode true \
+            --slavestartup false \
+            --httpport $RCS_HTTP_PORT \
+            --tlsport $RCS_TLS_PORT \
+            --enabletls true \
+            --tlscertificates "/client_certs/certs/Deadline10RemoteClient.pfx" \
+            --clientcert_pass $RCS_CERT_PASS \
+            --InitializeSecretsManagementServer true \
+            --secretsAdminName $SECRETS_USERNAME \
+            --secretsAdminPassword $SECRETS_PASSWORD \
+            --masterKeyName defaultKey \
+            --osUsername root
 
-        cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx
+            cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx        
+        else
+            /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
+            --mode unattended \
+            --enable-components proxyconfig \
+            --repositorydir /repo \
+            --dbsslcertificate /client_certs/deadline-client.pfx \
+            --dbsslpassword $DB_CERT_PASS \
+            --noguimode true \
+            --slavestartup false \
+            --httpport $RCS_HTTP_PORT \
+            --tlsport $RCS_TLS_PORT \
+            --enabletls true \
+            --tlscertificates generate \
+            --generatedcertdir ~/certs \
+            --clientcert_pass $RCS_CERT_PASS \
+            --InitializeSecretsManagementServer true \
+            --secretsAdminName $SECRETS_USERNAME \
+            --secretsAdminPassword $SECRETS_PASSWORD \
+            --masterKeyName defaultKey \
+            --osUsername root
+
+            cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx        
+        fi
+
         rm  /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run
         "$DEADLINE_CMD" secrets ConfigureServerMachine "$SECRETS_USERNAME" defaultKey root --password env:SECRETS_PASSWORD
 
