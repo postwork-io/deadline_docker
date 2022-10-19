@@ -21,7 +21,6 @@ if [ "$1" == "rcs" ]; then
         /bin/bash -c "$RCS_BIN"
     else
         echo "Initializing Remote Connection Server"
-        echo ls /client_certs
         if [ -e /client_certs/Deadline10RemoteClient.pfx ]; then
             echo "using existing certificate"
             /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
@@ -36,7 +35,7 @@ if [ "$1" == "rcs" ]; then
             --tlsport $RCS_TLS_PORT \
             --enabletls true \
             --tlscertificates existing \
-            --proxycertificate "/client_certs/Deadline10RemoteClient.pfx" \
+            --proxycertificate /client_certs/Deadline10RemoteClient.pfx \
             --proxycertificatepassword $RCS_CERT_PASS \
             --InitializeSecretsManagementServer true \
             --secretsAdminName $SECRETS_USERNAME \
@@ -44,6 +43,7 @@ if [ "$1" == "rcs" ]; then
             --masterKeyName defaultKey \
             --osUsername root 
         else
+            echo "not doing what I want"
             /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
             --mode unattended \
             --enable-components proxyconfig \
