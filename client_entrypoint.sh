@@ -34,8 +34,9 @@ if [ "$1" == "rcs" ]; then
             --httpport $RCS_HTTP_PORT \
             --tlsport $RCS_TLS_PORT \
             --enabletls true \
-            --tlscertificates "/client_certs/Deadline10RemoteClient.pfx" \
-            --clientcert_pass $RCS_CERT_PASS \
+            --tlscertificates existing \
+            --proxycertificate "/client_certs/Deadline10RemoteClient.pfx" \
+            --proxycertificatepassword $RCS_CERT_PASS \
             --InitializeSecretsManagementServer true \
             --secretsAdminName $SECRETS_USERNAME \
             --secretsAdminPassword $SECRETS_PASSWORD \
