@@ -21,7 +21,7 @@ if [ "$1" == "rcs" ]; then
         /bin/bash -c "$RCS_BIN"
     else
         echo "Initializing Remote Connection Server"
-        if [ -e "/client_certs/certs/Deadline10RemoteClient.pfx" ]; then
+        if [ -e "/client_certs/Deadline10RemoteClient.pfx" ]; then
         
             /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
             --mode unattended \
@@ -34,15 +34,13 @@ if [ "$1" == "rcs" ]; then
             --httpport $RCS_HTTP_PORT \
             --tlsport $RCS_TLS_PORT \
             --enabletls true \
-            --tlscertificates "/client_certs/certs/Deadline10RemoteClient.pfx" \
+            --tlscertificates "/client_certs/Deadline10RemoteClient.pfx" \
             --clientcert_pass $RCS_CERT_PASS \
             --InitializeSecretsManagementServer true \
             --secretsAdminName $SECRETS_USERNAME \
             --secretsAdminPassword $SECRETS_PASSWORD \
             --masterKeyName defaultKey \
-            --osUsername root
-
-            cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx        
+            --osUsername root 
         else
             /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
             --mode unattended \
