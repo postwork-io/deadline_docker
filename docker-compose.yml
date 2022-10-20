@@ -47,6 +47,7 @@ services:
     command: rcs
     volumes:
       - certs:/client_certs
+      - server_certs:/server_certs
       - repo:/repo
     ports:
       - 4433:4433
@@ -127,5 +128,6 @@ services:
 volumes:
   data:
   certs:
+  server_certs:
   repo:
 
