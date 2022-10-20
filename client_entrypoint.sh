@@ -31,6 +31,8 @@ if [ "$1" == "rcs" ]; then
             --dbsslpassword $DB_CERT_PASS \
             --noguimode true \
             --slavestartup false \
+            --proxycertificatepassword $RCS_CERT_PASS \
+            --proxycertificate /client_certs/Deadline10RemoteClient.pfx \
             --httpport $RCS_HTTP_PORT \
             --tlsport $RCS_TLS_PORT \
             --enabletls true \
