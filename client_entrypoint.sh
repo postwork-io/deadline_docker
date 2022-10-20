@@ -41,7 +41,7 @@ if [ "$1" == "rcs" ]; then
             --tlsport $RCS_TLS_PORT \
             --enabletls true \
             --tlscertificates existing \
-            --servercert /server_certs/server_certs/$HOSTNAME.pfx \
+            --servercert /server_certs/$HOSTNAME.pfx \
             --cacert /server_certs/ca.crt \
             --InitializeSecretsManagementServer true \
             --secretsAdminName $SECRETS_USERNAME \
