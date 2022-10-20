@@ -28,7 +28,7 @@ if [ "$1" == "rcs" ]; then
     else
         echo "Initializing Remote Connection Server"
         if [ -e /client_certs/Deadline10RemoteClient.pfx ]; then
-            echo "using existing certificate"
+            echo "Using existing certificates"
             /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
             --mode unattended \
             --enable-components proxyconfig \
@@ -49,7 +49,7 @@ if [ "$1" == "rcs" ]; then
             --masterKeyName defaultKey \
             --osUsername root 
         else
-            echo "not doing what I want"
+            echo "Generating Certificates"
             /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
             --mode unattended \
             --enable-components proxyconfig \
