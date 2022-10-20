@@ -14,6 +14,12 @@ configure_from_env () {
     fi
 }
 
+
+cleanup_installer () {
+    rm /build/DeadlineClient*
+    rm /build/AWSPortalLink*
+}
+
 if [ "$1" == "rcs" ]; then
     echo "Deadline Remote Connection Server"
     if [ -e "$RCS_BIN" ]; then
@@ -31,13 +37,12 @@ if [ "$1" == "rcs" ]; then
             --dbsslpassword $DB_CERT_PASS \
             --noguimode true \
             --slavestartup false \
-            --proxycertificatepassword $RCS_CERT_PASS \
-            --proxycertificate /client_certs/Deadline10RemoteClient.pfx \
             --httpport $RCS_HTTP_PORT \
             --tlsport $RCS_TLS_PORT \
             --enabletls true \
             --tlscertificates existing \
-            --servercert /client_certs/Deadline10RemoteClient.pfx \
+            --servercert /server_certs/server_certs/$HOSTNAME.pfx \
+            --cacert /server_certs/ca.crt \
             --InitializeSecretsManagementServer true \
             --secretsAdminName $SECRETS_USERNAME \
             --secretsAdminPassword $SECRETS_PASSWORD \
@@ -65,10 +70,13 @@ if [ "$1" == "rcs" ]; then
             --masterKeyName defaultKey \
             --osUsername root
 
-            cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx        
+            cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx
+            cp /root/certs/$HOSTNAME.pfx /server_certs/$HOSTNAME.pfx
+            cp /root/certs/ca.crt /server_certs/ca.crt
         fi
 
-        rm  /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run
+        cleanup_installer
+        
         "$DEADLINE_CMD" secrets ConfigureServerMachine "$SECRETS_USERNAME" defaultKey root --password env:SECRETS_PASSWORD
 
         "$RCS_BIN"
@@ -88,7 +96,7 @@ elif [ "$1" == "webservice" ]; then
         --slavestartup false \
         --webservice_enabletls false
 
-        rm  /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run
+        cleanup_installer
 
         "$WEB_BIN"
     fi
@@ -111,7 +119,7 @@ elif [ "$1" == "forwarder" ]; then
         --secretsAdminName $SECRETS_USERNAME \
         --secretsAdminPassword $SECRETS_PASSWORD \
 
-        rm  /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run
+        cleanup_installer
 
         "$FORWARDER_BIN" -sslpath /client_certs
     fi
@@ -131,7 +139,7 @@ elif [ "$1" == "zt-forwarder" ]; then
         --secretsAdminName $SECRETS_USERNAME \
         --secretsAdminPassword $SECRETS_PASSWORD \
 
-        rm  /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run
+        cleanup_installer
         
         curl -s https://install.zerotier.com | /bin/bash
         echo 9994 > /var/lib/zerotier-one/zerotier-one.port
