@@ -145,7 +145,8 @@ if [ "$1" == "rcs" ]; then
 
         "$RCS_BIN"
     fi
-elif [ "$1" == "webservice" ]; then
+
+elif [ "$1" == "webservice" ] && [ "$USE_WEBSERVICE" == "TRUE" ]; then
     if [ -e "$WEB_BIN" ]; then
         /bin/bash -c "$WEB_BIN"
     else
@@ -168,7 +169,7 @@ elif [ "$1" == "webservice" ]; then
 elif [ "$1" == "worker" ]; then
     echo "not yet implemented"
 
-elif [ "$1" == "forwarder" ]; then
+elif [ "$1" == "forwarder" ] && [ "$USE_LICENSE_FORWARDER" == "TRUE" ]; then
     if [ -e "$FORWARDER_BIN" ]; then
         /bin/bash -c "$FORWARDER_BIN"
     else
@@ -187,7 +188,8 @@ elif [ "$1" == "forwarder" ]; then
 
         "$FORWARDER_BIN" -sslpath /client_certs
     fi
-elif [ "$1" == "zt-forwarder" ]; then
+
+elif [ "$1" == "zt-forwarder" ]  && [ "$USE_LICENSE_FORWARDER" == "TRUE" ]; then
     if [ -e "$FORWARDER_BIN" ]; then
         /usr/sbin/zerotier-one -d
         /bin/bash -c "$FORWARDER_BIN"

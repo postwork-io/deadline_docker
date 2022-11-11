@@ -48,6 +48,8 @@ services:
         - SECRETS_USERNAME=$SECRETS_USERNAME
         - SECRETS_PASSWORD=$SECRETS_PASSWORD
         - DB_HOST=$DB_HOST
+        - USE_WEBSERVICE=$USE_WEBSERVICE
+        - USE_LICENSE_FORWARDER=$USE_LICENSE_FORWARDER
     command: rcs
     volumes:
       - certs:/client_certs
