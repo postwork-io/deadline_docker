@@ -21,13 +21,10 @@ install_repository () {
         ./DeadlineRepository-${DEADLINE_VERSION}-linux-x64-installer.run --mode unattended \
         --dbhost $DB_HOST\
         --dbport 27100\
-        --installSecretsManagement true\
-        --secretsAdminName ${SECRETS_USERNAME}\
-        --secretsAdminPassword ${SECRETS_PASSWORD}\
         --installmongodb false\
         --prefix /repo\
         --dbname deadline10db\
-        --dbclientcert ~/keys/deadline-client.pfx\
+        --dbclientcert /client_certs/deadline-client.pfx\
         --dbcertpass ${DB_CERT_PASS}\
         --dbssl true
 
