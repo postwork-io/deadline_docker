@@ -64,7 +64,7 @@ services:
     depends_on:
       - deadline-db
       - deadline-rcs
-    restart: unless-stopped
+    restart: on-failure
     <<: *default
     command: webservice
     hostname: deadline-web.$ROOT_DOMAIN
@@ -78,7 +78,7 @@ services:
     depends_on:
       - deadline-db
       - deadline-rcs
-    restart: unless-stopped
+    restart: on-failure
     <<: *default
     command: forwarder
     hostname: deadline-forwarder.$ROOT_DOMAIN
