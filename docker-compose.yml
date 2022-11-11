@@ -28,7 +28,6 @@ services:
       - deadline-db
     restart: unless-stopped
     hostname: deadline-rcs.$ROOT_DOMAIN
-    #hostname: deadline-rcs
     build:
       context: .
       dockerfile: dockerfile
@@ -48,6 +47,7 @@ services:
         - DB_CERT_PASS=$DB_CERT_PASS
         - SECRETS_USERNAME=$SECRETS_USERNAME
         - SECRETS_PASSWORD=$SECRETS_PASSWORD
+        - DB_HOST=$DB_HOST
     command: rcs
     volumes:
       - certs:/client_certs

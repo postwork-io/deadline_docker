@@ -15,6 +15,32 @@ configure_from_env () {
 }
 
 
+install_repository () {
+    if [ ! -f /repo/settings/repository.ini ]; then
+        echo "Install Repository"
+        ./DeadlineRepository-${DEADLINE_VERSION}-linux-x64-installer.run --mode unattended \
+        --dbhost $DB_HOST\
+        --dbport 27100\
+        --installSecretsManagement true\
+        --secretsAdminName ${SECRETS_USERNAME}\
+        --secretsAdminPassword ${SECRETS_PASSWORD}\
+        --installmongodb false\
+        --prefix /repo\
+        --dbname deadline10db\
+        --dbclientcert ~/keys/deadline-client.pfx\
+        --dbcertpass ${DB_CERT_PASS}\
+        --dbssl true
+
+        echo "Install Custom Elements from https://github.com/postwork-io/custom.git"
+        git clone https://github.com/postwork-io/custom.git
+        rsync --ignore-existing -raz ./custom /repo
+
+    else
+        echo "Repository Already Installed"
+
+    fi
+}
+
 download_additional_installers () {
     echo "Downloading Additional Installers"
     mkdir -p /installers
@@ -39,6 +65,9 @@ cleanup_installer () {
 }
 
 if [ "$1" == "rcs" ]; then
+    
+    install_repository
+
     echo "Deadline Remote Connection Server"
     if [ -e "$RCS_BIN" ]; then
 
