@@ -19,13 +19,16 @@ install_repository () {
     if [ ! -f /repo/settings/repository.ini ]; then
         echo "Install Repository"
         ./DeadlineRepository-${DEADLINE_VERSION}-linux-x64-installer.run --mode unattended \
-        --dbhost $DB_HOST\
-        --dbport 27100\
-        --installmongodb false\
-        --prefix /repo\
-        --dbname deadline10db\
-        --dbclientcert /client_certs/deadline-client.pfx\
-        --dbcertpass ${DB_CERT_PASS}\
+        --dbhost $DB_HOST \
+        --dbport 27100 \
+        --installmongodb false \
+        --installSecretsManagement true \
+        --secretsAdminName $SECRETS_USERNAME \
+        --secretsAdminPassword $SECRETS_PASSWORD \
+        --prefix /repo \
+        --dbname deadline10db \
+        --dbclientcert /client_certs/deadline-client.pfx \
+        --dbcertpass $DB_CERT_PASS \
         --dbssl true
 
         echo "Install Custom Elements from https://github.com/postwork-io/custom.git"
@@ -141,7 +144,7 @@ if [ "$1" == "rcs" ]; then
         wait
         cleanup_installer
         
-        "$DEADLINE_CMD" secrets ConfigureServerMachine "$SECRETS_USERNAME" defaultKey root --password env:SECRETS_PASSWORD
+        "$DEADLINE_CMD" secrets ConfigureServerMachine env:SECRETS_USERNAME defaultKey root --password env:SECRETS_PASSWORD
 
         "$RCS_BIN"
     fi
