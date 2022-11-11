@@ -5,10 +5,11 @@ services:
     restart: unless-stopped
     build:
       context: .
-      dockerfile: database.dockerfile
+      dockerfile: dockerfile
+      target: db
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
-        - DEADLINE_INSTALLER=$DEADLINE_INSTALLER
+        - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
         - SECRETS_USERNAME=$SECRETS_USERNAME
         - SECRETS_PASSWORD=$SECRETS_PASSWORD
         - DB_CERT_PASS=$DB_CERT_PASS
@@ -18,7 +19,7 @@ services:
     volumes:
       - certs:/client_certs
       - repo:/repo
-      - data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
+      - db_data:/opt/Thinkbox/DeadlineDatabase10/mongo/data
     ports:
       - 27100:27100
 
@@ -30,15 +31,18 @@ services:
     #hostname: deadline-rcs
     build:
       context: .
-      dockerfile: client.dockerfile
+      dockerfile: dockerfile
+      target: client
       args:
         - DEADLINE_VERSION=$DEADLINE_VERSION
-        - DEADLINE_INSTALLER=$DEADLINE_INSTALLER
+        - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
     <<: &default
       image: postwork/deadline-client
       environment:
+        - DEADLINE_INSTALLER_BASE=$DEADLINE_INSTALLER_BASE
         - DEADLINE_VERSION=$DEADLINE_VERSION
         - RCS_HTTP_PORT=$RCS_HTTP_PORT
+        - RCS_USE_TLS=$RCS_USE_TLS
         - RCS_TLS_PORT=$RCS_TLS_PORT
         - RCS_CERT_PASS=$RCS_CERT_PASS
         - DB_CERT_PASS=$DB_CERT_PASS
@@ -49,8 +53,10 @@ services:
       - certs:/client_certs
       - server_certs:/server_certs
       - repo:/repo
+      - installers:/installers
     ports:
       - 4433:4433
+      - 8888:8888
 
   deadline-web:
     depends_on:
@@ -117,17 +123,20 @@ services:
 
   filebrowser:
     image: filebrowser/filebrowser
+    restart: unless-stopped
     volumes:
       - repo:/srv/repo
       - certs:/srv/certs
+      - installers:/srv/installers
     ports:
       - 8080:80
 
 
 
 volumes:
-  data:
+  db_data:
   certs:
   server_certs:
   repo:
+  installers:
 

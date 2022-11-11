@@ -1,20 +1,30 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as base
+
 
 ARG DB_CERT_PASS
 ARG SECRETS_USERNAME
 ARG SECRETS_PASSWORD
 ARG DB_HOST
 ARG DEADLINE_VERSION
-ARG DEADLINE_INSTALLER
+ARG DEADLINE_INSTALLER_BASE
 ARG CERT_ORG
 ARG CERT_OU
 
 WORKDIR /build
 
-RUN apt-get update
+RUN apt-get update && apt-get install -y curl dos2unix python python-pip
+RUN pip install awscli
 
-RUN apt-get install -y curl &&\
-    apt-get install -y python python-pip git dos2unix
+RUN aws s3 cp --region us-west-2 --no-sign-request s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
+
+RUN tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
+
+
+
+FROM base as db
+#RUN apt-get update
+
+RUN apt-get install -y git
 RUN mkdir ~/keys
 
 #Generate Certificates
@@ -43,11 +53,6 @@ RUN mv mongodb-linux-x86_64-ubuntu1804-4.2.12/bin /opt/Thinkbox/DeadlineDatabase
 RUN rm mongodb-linux-x86_64-ubuntu1804-4.2.12.tgz && rm -rf mongodb-linux-x86_64-ubuntu1804-4.2.12
 
 
-#Install Repository
-#COPY ./Deadline-${DEADLINE_VERSION}-linux-installers.tar ./Deadline-${DEADLINE_VERSION}-linux-installers.tar
-RUN curl -L ${DEADLINE_INSTALLER} -o Deadline-${DEADLINE_VERSION}-linux-installers.tar
-RUN tar -xvf Deadline-${DEADLINE_VERSION}-linux-installers.tar
-
 # Start the databse and then setup the initial database settings
 RUN nohup bash -c "/opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongod\
     --config /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf &" &&\
@@ -74,3 +79,18 @@ ADD ./database_entrypoint.sh .
 RUN dos2unix ./database_entrypoint.sh && chmod u+x ./database_entrypoint.sh
 
 ENTRYPOINT [ "./database_entrypoint.sh" ]
+
+
+
+FROM base as client
+
+RUN mkdir ~/certs
+
+
+RUN apt-get install -y lsb
+
+ADD ./client_entrypoint.sh .
+RUN dos2unix ./client_entrypoint.sh && chmod u+x ./client_entrypoint.sh
+
+
+ENTRYPOINT [ "./client_entrypoint.sh" ]

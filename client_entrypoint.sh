@@ -15,6 +15,24 @@ configure_from_env () {
 }
 
 
+download_additional_installers () {
+    echo "Downloading Additional Installers"
+    mkdir -p /installers
+
+    if [ ! -f /installers/Deadline-$DEADLINE_VERSION-linux-installers.tar ]; then
+        mv Deadline-$DEADLINE_VERSION-linux-installers.tar /installers/Deadline-$DEADLINE_VERSION-linux-installers.tar
+    fi
+
+    if [ ! -f /installers/Deadline-$DEADLINE_VERSION-windows-installers.zip ]; then
+        aws s3 cp --region us-west-2 --no-sign-request s3://thinkbox-installers/$DEADLINE_INSTALLER_BASE-windows-installers.zip /installers/Deadline-$DEADLINE_VERSION-windows-installers.zip &
+    fi
+
+    if [ ! -f /installers/Deadline-$DEADLINE_VERSION-osx-installers.dmg ]; then
+        aws s3 cp --region us-west-2 --no-sign-request s3://thinkbox-installers/$DEADLINE_INSTALLER_BASE-osx-installers.dmg /installers/Deadline-$DEADLINE_VERSION-osx-installers.dmg &
+    fi
+    wait
+}
+
 cleanup_installer () {
     rm /build/DeadlineClient*
     rm /build/AWSPortalLink*
@@ -26,8 +44,27 @@ if [ "$1" == "rcs" ]; then
 
         /bin/bash -c "$RCS_BIN"
     else
+        download_additional_installers &
         echo "Initializing Remote Connection Server"
-        if [ -e /client_certs/Deadline10RemoteClient.pfx ]; then
+        if [ "$USE_RCS_TLS" != "TRUE" ]; then
+            echo "Using unencrypted RCS Server!"
+            /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
+            --mode unattended \
+            --enable-components proxyconfig \
+            --repositorydir /repo \
+            --dbsslcertificate /client_certs/deadline-client.pfx \
+            --dbsslpassword $DB_CERT_PASS \
+            --noguimode true \
+            --slavestartup false \
+            --httpport $RCS_HTTP_PORT \
+            --enabletls false \
+            --InitializeSecretsManagementServer true \
+            --secretsAdminName $SECRETS_USERNAME \
+            --secretsAdminPassword $SECRETS_PASSWORD \
+            --masterKeyName defaultKey \
+            --osUsername root
+
+        elif [ -e /client_certs/Deadline10RemoteClient.pfx ]; then
             echo "Using existing certificates"
             /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
             --mode unattended \
@@ -74,7 +111,8 @@ if [ "$1" == "rcs" ]; then
             cp /root/certs/$HOSTNAME.pfx /server_certs/$HOSTNAME.pfx
             cp /root/certs/ca.crt /server_certs/ca.crt
         fi
-
+        
+        wait
         cleanup_installer
         
         "$DEADLINE_CMD" secrets ConfigureServerMachine "$SECRETS_USERNAME" defaultKey root --password env:SECRETS_PASSWORD
