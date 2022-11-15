@@ -60,8 +60,9 @@ download_additional_installers () {
 }
 
 cleanup_installer () {
-    rm /build/DeadlineClient*
+    rm /build/Deadline*
     rm /build/AWSPortalLink*
+    rm /build/custom*
 }
 
 if [ "$1" == "rcs" ]; then
@@ -87,11 +88,7 @@ if [ "$1" == "rcs" ]; then
             --slavestartup false \
             --httpport $RCS_HTTP_PORT \
             --enabletls false \
-            --InitializeSecretsManagementServer true \
-            --secretsAdminName $SECRETS_USERNAME \
-            --secretsAdminPassword $SECRETS_PASSWORD \
-            --masterKeyName defaultKey \
-            --osUsername root
+
 
         elif [ -e /client_certs/Deadline10RemoteClient.pfx ]; then
             echo "Using existing certificates"
@@ -109,11 +106,9 @@ if [ "$1" == "rcs" ]; then
             --tlscertificates existing \
             --servercert /server_certs/$HOSTNAME.pfx \
             --cacert /server_certs/ca.crt \
-            --InitializeSecretsManagementServer true \
             --secretsAdminName $SECRETS_USERNAME \
             --secretsAdminPassword $SECRETS_PASSWORD \
-            --masterKeyName defaultKey \
-            --osUsername root 
+            --osUsername root
         else
             echo "Generating Certificates"
             /build/DeadlineClient-$DEADLINE_VERSION-linux-x64-installer.run \
@@ -130,10 +125,8 @@ if [ "$1" == "rcs" ]; then
             --tlscertificates generate \
             --generatedcertdir ~/certs \
             --clientcert_pass $RCS_CERT_PASS \
-            --InitializeSecretsManagementServer true \
             --secretsAdminName $SECRETS_USERNAME \
             --secretsAdminPassword $SECRETS_PASSWORD \
-            --masterKeyName defaultKey \
             --osUsername root
 
             cp /root/certs/Deadline10RemoteClient.pfx /client_certs/Deadline10RemoteClient.pfx
@@ -144,7 +137,7 @@ if [ "$1" == "rcs" ]; then
         wait
         cleanup_installer
         
-        "$DEADLINE_CMD" secrets ConfigureServerMachine env:SECRETS_USERNAME defaultKey root --password env:SECRETS_PASSWORD
+        "$DEADLINE_CMD" secrets ConfigureServerMachine $SECRETS_USERNAME defaultKey root --password env:SECRETS_PASSWORD
 
         "$RCS_BIN"
     fi
