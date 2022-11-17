@@ -42,18 +42,22 @@ install_repository () {
 }
 
 download_additional_installers () {
-    echo "Downloading Additional Installers"
+    
     mkdir -p /installers
 
-    if [ ! -f /installers/Deadline-$DEADLINE_VERSION-linux-installers.tar ]; then
+    if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-linux-installers.tar" ]; then
+        echo "Downloading Linux Installers"
         mv Deadline-$DEADLINE_VERSION-linux-installers.tar /installers/Deadline-$DEADLINE_VERSION-linux-installers.tar
     fi
 
-    if [ ! -f /installers/Deadline-$DEADLINE_VERSION-windows-installers.zip ]; then
+    if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-windows-installers.zip" ]; then
+        echo "Downloading Windows Installers"
+        echo "/installers/Deadline-$DEADLINE_VERSION-windows-installers.zip" 
         aws s3 cp --region us-west-2 --no-sign-request s3://thinkbox-installers/$DEADLINE_INSTALLER_BASE-windows-installers.zip /installers/Deadline-$DEADLINE_VERSION-windows-installers.zip &
     fi
 
-    if [ ! -f /installers/Deadline-$DEADLINE_VERSION-osx-installers.dmg ]; then
+    if [ ! -e "/installers/Deadline-$DEADLINE_VERSION-osx-installers.dmg" ]; then
+        echo "Downloading Mac Installers"
         aws s3 cp --region us-west-2 --no-sign-request s3://thinkbox-installers/$DEADLINE_INSTALLER_BASE-osx-installers.dmg /installers/Deadline-$DEADLINE_VERSION-osx-installers.dmg &
     fi
     wait
@@ -62,7 +66,7 @@ download_additional_installers () {
 cleanup_installer () {
     rm /build/Deadline*
     rm /build/AWSPortalLink*
-    rm /build/custom*
+    rm -rf /build/custom
 }
 
 if [ "$1" == "rcs" ]; then
@@ -134,7 +138,7 @@ if [ "$1" == "rcs" ]; then
             cp /root/certs/ca.crt /server_certs/ca.crt
         fi
         
-        wait
+        
         cleanup_installer
         
         "$DEADLINE_CMD" secrets ConfigureServerMachine $SECRETS_USERNAME defaultKey root --password env:SECRETS_PASSWORD
