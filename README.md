@@ -19,21 +19,21 @@ During the installation of the client make sure to connect to the repository usi
 
 ## Environment Variable Guide
 
-`DEADLINE_VERSION` The current version of deadline
-`DEADLINE_INSTALLER_BASE` The basename for the deadline installer hosted on the Thinkbox S3 Bucket
-`RCS_HTTP_PORT` Port used to connect to the Remote Connection Server if TLS is disabled
-`RCS_TLS_PORT` Port used to connect to the Remote Connection Server if TLS is enabled 
-`RCS_CERT_PASS` The passphrase used with the Remote Client Certificate used to connect to the Remote Connection Server
-`DB_CERT_PASS` The passphrase used with deadline client certificate for servers to connect directly with the database
-`SECRETS_USERNAME` Admin username used with the deadline secets manager
-`SECRETS_PASSWORD` Password used for the deadline secrets manager. Must include lower case, upper case, numbers, and symbols
-`ROOT_DOMAIN` Used to set the hostname of the container to a FQDN if using DNS
-`CERT_ORG` Org for creating certificates
-`CERT_OU` Organizational Unit for certificate creation
-`DB_HOST` hostname for the database (probably don't need to change this)
-`USE_RCS_TLS` Set to `TRUE` if want all communication with the Remote Connection Server to be encrypted (Required if using the secrets manager)
-`USE_WEBSERVICE` Set to `TRUE` to start the deadline webservice server
-`USE_LICENSE_FORWARDER` Set to `TRUE` if using the deadline license forwarder to use the Usage Based Licensing
+* `DEADLINE_VERSION` The current version of deadline
+* `DEADLINE_INSTALLER_BASE` The basename for the deadline installer hosted on the Thinkbox S3 Bucket
+* `RCS_HTTP_PORT` Port used to connect to the Remote Connection Server if TLS is disabled
+* `RCS_TLS_PORT` Port used to connect to the Remote Connection Server if TLS is enabled 
+* `RCS_CERT_PASS` The passphrase used with the Remote Client Certificate used to connect to the Remote Connection Server
+* `DB_CERT_PASS` The passphrase used with deadline client certificate for servers to connect directly with the database
+* `SECRETS_USERNAME` Admin username used with the deadline secets manager
+* `SECRETS_PASSWORD` Password used for the deadline secrets manager. Must include lower case, upper case, numbers, and symbols
+* `ROOT_DOMAIN` Used to set the hostname of the container to a FQDN if using DNS
+* `CERT_ORG` Org for creating certificates
+* `CERT_OU` Organizational Unit for certificate creation
+* `DB_HOST` hostname for the database (probably don't need to change this)
+* `USE_RCS_TLS` Set to `TRUE` if want all communication with the Remote Connection Server to be encrypted (Required if using the secrets manager)
+* `USE_WEBSERVICE` Set to `TRUE` to start the deadline webservice server
+* `USE_LICENSE_FORWARDER` Set to `TRUE` if using the deadline license forwarder to use the Usage Based Licensing
 
 ## Backup and Restore
 
