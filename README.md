@@ -37,15 +37,15 @@ During the installation of the client make sure to connect to the repository usi
 
 ## Backup and Restore
 
-To backup the containers use the backup_volumes script from the scripts folder of the repo. 
-`scripts/backup_volumes.bat`
-By default it will create a .tar archive for each volume appended with the date in a YYYY-MM-DD format in the current working directroy. To specify a backup location supply the path as a command line variable.
-`scripts/backup_volumes.bat Drive:/path/to/backup_folder`
+To backup the containers use the backup_volumes script from the scripts folder of the repo.  
+`scripts/backup_volumes.bat`  
+By default it will create a .tar archive for each volume appended with the date in a YYYY-MM-DD format in the current working directroy. To specify a backup location supply the path as a command line variable.  
+`scripts/backup_volumes.bat Drive:/path/to/backup_folder`  
 
-To restore a backup first bring up the stack and wait for all the containers to be fully created and then bring the stack back down. Then run the restore_volumes script from the scripts folder of the repo.
-`scripts/restore_volumes.bat`
+To restore a backup first bring up the stack and wait for all the containers to be fully created and then bring the stack back down. Then run the restore_volumes script from the scripts folder of the repo.  
+`scripts/restore_volumes.bat`  
 
-If the backups aren't in the current directory or you want to restore a backup from a different date then the current day you can specify a path and date.
+If the backups aren't in the current directory or you want to restore a backup from a different date then the current day you can specify a path and date.  
 `scripts/backup_volumes.bat Drive:/path/to/backup_folder YYYY-MM-DD` 
 
 Bring the stack up and all should be restored.
