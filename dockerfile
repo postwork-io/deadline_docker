@@ -18,6 +18,15 @@ RUN apt-get update && apt-get install -y curl dos2unix python python-pip git
 
 FROM base as db
 
+ARG DB_CERT_PASS
+ARG SECRETS_USERNAME
+ARG SECRETS_PASSWORD
+ARG DB_HOST
+ARG DEADLINE_VERSION
+ARG DEADLINE_INSTALLER_BASE
+ARG CERT_ORG
+ARG CERT_OU
+
 RUN mkdir ~/keys
 
 #Generate Certificates
@@ -53,6 +62,10 @@ ENTRYPOINT [ "./database_entrypoint.sh" ]
 
 
 FROM base as client
+
+ARG DEADLINE_VERSION
+ARG DEADLINE_INSTALLER_BASE
+
 
 RUN pip install awscli
 RUN aws s3 cp --region us-west-2 --no-sign-request s3://thinkbox-installers/${DEADLINE_INSTALLER_BASE}-linux-installers.tar Deadline-${DEADLINE_VERSION}-linux-installers.tar
