@@ -9,7 +9,7 @@ This project is to get Deadline Render manager up and running quickly for small 
 ### Running the Stack
 Install docker and docker compose
 Rename `example.env` to `.env` and update any of the password fields with secure passwords.
-Navigate to an  the repo folder and run `docker-compose up` and it will download and build and start running.
+Navigate to an  the repo folder and run `COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build` to build the containers and then run `docker-compose up` to start running.
 
 ### Connecting clients
 
